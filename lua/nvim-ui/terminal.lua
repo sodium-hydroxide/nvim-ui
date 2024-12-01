@@ -6,12 +6,6 @@
  * to perform command-line operations without leaving Neovim. It supports multiple
  * terminal styles (floating, horizontal, vertical) and intelligent terminal
  * management to match your workflow.
- *
- * The terminal configuration emphasizes:
- * - Quick access through intuitive keymaps
- * - Smart window positioning and sizing
- * - Consistent behavior across terminal types
- * - Seamless integration with Neovim's features
 --]]
 local M = {}
 
@@ -21,10 +15,6 @@ local M = {}
  * @field layouts Settings for different terminal layouts
  * @field behavior Terminal behavior settings
  * @local
- *
- * This configuration creates a terminal experience that feels natural within
- * Neovim while providing the full power of your shell. Each setting is chosen
- * to support efficient terminal use while maintaining a clean interface.
 --]]
 local default_config = {
     -- Shell configuration
@@ -33,23 +23,19 @@ local default_config = {
     -- Terminal window layouts
     layouts = {
         floating = {
-            -- Floating window takes up significant but not full screen space
             width = 0.8,
             height = 0.8,
             border = "curved",
-            -- Position in the center of the screen
             anchor = "center",
             winblend = 0,
         },
         horizontal = {
-            -- Height is adaptive but with a minimum
             size = function(term)
                 return math.max(15, vim.o.lines * 0.3)
             end,
             direction = "horizontal",
         },
         vertical = {
-            -- Width takes up a reasonable portion of the screen
             size = function(term)
                 return math.max(80, vim.o.columns * 0.4)
             end,
@@ -59,26 +45,18 @@ local default_config = {
 
     -- Terminal behavior
     behavior = {
-        -- Close terminal when shell exits
         close_on_exit = true,
-        -- Insert mode when opening terminal
         start_in_insert = true,
-        -- Terminal-specific keymaps
         insert_mappings = true,
         terminal_mappings = true,
-        -- Preserve terminal content when hiding
         persist_size = true,
-        -- Shell command persistence
         persist_mode = true,
     },
 
     -- Visual settings
     visual = {
-        -- No line numbers in terminal
         numbers = false,
-        -- Use a minimal status line
         statusline = false,
-        -- Highlight settings
         highlights = {
             Normal = { link = "Normal" },
             NormalFloat = { link = "Normal" },
@@ -93,9 +71,6 @@ local default_config = {
  * @param opts table Configuration options
  * @return Terminal The created terminal instance
  * @local
- *
- * This function handles the creation and configuration of terminal instances,
- * ensuring consistent behavior regardless of the chosen layout.
 --]]
 local function create_terminal(layout, opts)
     local Terminal = require("toggleterm.terminal").Terminal
@@ -137,13 +112,8 @@ end
  * @param term Terminal The terminal instance
  * @param opts table Configuration options
  * @local
- *
- * These keymaps make it easy to work with terminals while maintaining
- * Neovim's keyboard-driven workflow. They provide quick access to common
- * terminal operations.
 --]]
 local function setup_keymaps(term, opts)
-    -- Terminal navigation in normal mode
     local function set_keymap(mode, key, action, desc)
         vim.keymap.set(mode, key, action, {
             silent = true,
@@ -153,35 +123,23 @@ local function setup_keymaps(term, opts)
     end
 
     -- Easy escape from terminal mode
-    set_keymap('t', '<C-\\><C-\\>', '<C-\\><C-n>',
-        'Exit terminal mode')
+    set_keymap('t', '<C-\\><C-\\>', '<C-\\><C-n>', 'Exit terminal mode')
 
     -- Window navigation from terminal
-    set_keymap('t', '<C-h>', '<C-\\><C-n><C-w>h',
-        'Navigate left from terminal')
-    set_keymap('t', '<C-j>', '<C-\\><C-n><C-w>j',
-        'Navigate down from terminal')
-    set_keymap('t', '<C-k>', '<C-\\><C-n><C-w>k',
-        'Navigate up from terminal')
-    set_keymap('t', '<C-l>', '<C-\\><C-n><C-w>l',
-        'Navigate right from terminal')
+    set_keymap('t', '<C-h>', '<C-\\><C-n><C-w>h', 'Navigate left from terminal')
+    set_keymap('t', '<C-j>', '<C-\\><C-n><C-w>j', 'Navigate down from terminal')
+    set_keymap('t', '<C-k>', '<C-\\><C-n><C-w>k', 'Navigate up from terminal')
+    set_keymap('t', '<C-l>', '<C-\\><C-n><C-w>l', 'Navigate right from terminal')
 
     -- Terminal window management
-    set_keymap('t', '<C-w>N', '<C-\\><C-n>',
-        'Enter normal mode in terminal')
-    set_keymap('t', '<C-w>"', '<C-\\><C-n>:split<CR>',
-        'Split terminal horizontally')
-    set_keymap('t', '<C-w>%', '<C-\\><C-n>:vsplit<CR>',
-        'Split terminal vertically')
+    set_keymap('t', '<C-w>N', '<C-\\><C-n>', 'Enter normal mode in terminal')
+    set_keymap('t', '<C-w>"', '<C-\\><C-n>:split<CR>', 'Split terminal horizontally')
+    set_keymap('t', '<C-w>%', '<C-\\><C-n>:vsplit<CR>', 'Split terminal vertically')
 end
 
 --[[
  * @brief Sets up terminal autocommands
  * @local
- *
- * These autocommands ensure terminals behave consistently and integrate
- * well with the rest of Neovim. They handle events like terminal creation
- * and buffer management.
 --]]
 local function setup_autocommands()
     local group = vim.api.nvim_create_augroup("ToggleTermConfig", { clear = true })
@@ -190,24 +148,18 @@ local function setup_autocommands()
     vim.api.nvim_create_autocmd("TermOpen", {
         group = group,
         pattern = "term://*",
-        callback = function()
+        callback = function(args)
             -- Start in insert mode
             vim.cmd("startinsert")
-            -- Set terminal-specific options
-            local opts = {
-                buffer = true,
-                -- No line numbers in terminal
-                number = false,
-                relativenumber = false,
-                -- No sign column needed
-                signcolumn = "no",
-                -- Terminal-specific statusline
-                statusline = "%{b:term_title}",
-            }
-            -- Apply options
-            for k, v in pairs(opts) do
-                vim.opt_local[k] = v
-            end
+
+            -- Set buffer-local options correctly
+            local bufnr = args.buf
+            vim.wo.number = false
+            vim.wo.relativenumber = false
+            vim.wo.signcolumn = "no"
+
+            -- Set buffer-local statusline
+            vim.opt_local.statusline = "%{b:term_title}"
         end,
     })
 end
@@ -215,10 +167,6 @@ end
 --[[
  * @brief Main setup function for the terminal component
  * @param opts table Configuration options from main setup
- *
- * This function initializes the terminal system, creating the necessary
- * commands and keymaps for terminal management. It ensures terminals
- * are easily accessible and behave consistently.
 --]]
 M.setup = function(opts)
     -- Merge user options with defaults
