@@ -22,12 +22,6 @@ M.options = {
         which_key = true,     -- Keymap hints
     },
 
-    -- Startup configuration
-    startup = {
-        disable_message = true,  -- Disable default startup message
-        show_keybinds = false,   -- Show custom keybind information
-    },
-
     -- Color scheme configuration
     colorscheme = {
         name = "xcodelight",
@@ -117,57 +111,6 @@ M.options = {
 }
 
 --[[
- * @brief Displays custom startup information
- * @local
---]]
-local function display_startup_info()
-    -- Create a new buffer
-    local buf = vim.api.nvim_create_buf(false, true)
-
-    -- Set buffer content
-    local lines = {
-        "Welcome to Neovim!",
-        "",
-        "Quick Reference:",
-        "─────────────────",
-        "",
-        "File Tree:",
-        "  <leader>e - Toggle file tree",
-        "  <leader>o - Focus file tree",
-        "",
-        "Terminal:",
-        "  <leader>tf - Toggle floating terminal",
-        "  <leader>th - Toggle horizontal terminal",
-        "  <leader>tv - Toggle vertical terminal",
-        "",
-    }
-
-    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-
-    -- Set buffer options
-    vim.api.nvim_buf_set_option(buf, 'modifiable', false)
-    vim.api.nvim_buf_set_option(buf, 'buftype', 'nofile')
-    vim.api.nvim_buf_set_option(buf, 'swapfile', false)
-
-    -- Create autocommand to close the buffer when user starts typing
-    local group = vim.api.nvim_create_augroup("StartupScreen", { clear = true })
-    vim.api.nvim_create_autocmd({"InsertEnter", "BufReadPost", "BufNewFile"}, {
-        group = group,
-        buffer = buf,
-        once = true,
-        callback = function()
-            -- Delete the buffer
-            vim.api.nvim_buf_delete(buf, { force = true })
-            -- Create a new empty buffer
-            vim.cmd('enew')
-        end
-    })
-
-    -- Open buffer in current window
-    vim.api.nvim_set_current_buf(buf)
-end
-
---[[
  * @brief Ensures required plugins are available
  * @return boolean True if all required plugins are present
  * @local
@@ -201,11 +144,6 @@ M.setup = function(opts)
     -- Merge user options with defaults
     M.options = vim.tbl_deep_extend("force", M.options, opts or {})
 
-    -- Disable default startup message if configured
-    if M.options.startup.disable_message then
-        vim.opt.shortmess:append("I")
-    end
-
     -- Check dependencies
     if not check_dependencies() then
         return
@@ -236,22 +174,6 @@ M.setup = function(opts)
                 )
             end
         end
-    end
-
-    -- Display startup information if configured
-    if M.options.startup.show_keybinds then
-        -- Only show on empty buffers at startup
-        vim.api.nvim_create_autocmd("VimEnter", {
-            callback = function()
-                -- Check if we're opening a file or not
-                local argc = vim.fn.argc()
-                local bufname = vim.api.nvim_buf_get_name(0)
-                if argc == 0 and bufname == "" then
-                    display_startup_info()
-                end
-            end,
-            once = true,
-        })
     end
 end
 
