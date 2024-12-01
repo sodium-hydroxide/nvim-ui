@@ -25,7 +25,7 @@ M.options = {
     -- Startup configuration
     startup = {
         disable_message = true,  -- Disable default startup message
-        show_keybinds = true,   -- Show custom keybind information
+        show_keybinds = false,   -- Show custom keybind information
     },
 
     -- Color scheme configuration
@@ -148,6 +148,20 @@ local function display_startup_info()
     vim.api.nvim_buf_set_option(buf, 'modifiable', false)
     vim.api.nvim_buf_set_option(buf, 'buftype', 'nofile')
     vim.api.nvim_buf_set_option(buf, 'swapfile', false)
+
+    -- Create autocommand to close the buffer when user starts typing
+    local group = vim.api.nvim_create_augroup("StartupScreen", { clear = true })
+    vim.api.nvim_create_autocmd({"InsertEnter", "BufReadPost", "BufNewFile"}, {
+        group = group,
+        buffer = buf,
+        once = true,
+        callback = function()
+            -- Delete the buffer
+            vim.api.nvim_buf_delete(buf, { force = true })
+            -- Create a new empty buffer
+            vim.cmd('enew')
+        end
+    })
 
     -- Open buffer in current window
     vim.api.nvim_set_current_buf(buf)

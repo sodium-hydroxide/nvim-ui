@@ -86,14 +86,14 @@ local default_config = {
     code = {
         enabled = true,
         bindings = {
-            { "gd", vim.lsp.buf.definition, desc = "Go to definition" },
-            { "gr", vim.lsp.buf.references, desc = "Find references" },
-            { "K", vim.lsp.buf.hover, desc = "Show hover" },
-            { "<leader>ca", vim.lsp.buf.code_action, desc = "Code actions" },
-            { "<leader>rn", vim.lsp.buf.rename, desc = "Rename symbol" },
-            { "[d", vim.diagnostic.goto_prev, desc = "Previous diagnostic" },
-            { "]d", vim.diagnostic.goto_next, desc = "Next diagnostic" },
-            { "<leader>cf", vim.lsp.buf.format, desc = "Format code" },
+            { "gd", ":lua vim.lsp.buf.definition()<CR>", desc = "Go to definition" },
+            { "gr", ":lua vim.lsp.buf.references()<CR>", desc = "Find references" },
+            { "K", ":lua vim.lsp.buf.hover()<CR>", desc = "Show hover" },
+            { "<leader>ca", ":lua vim.lsp.buf.code_action()<CR>", desc = "Code actions" },
+            { "<leader>rn", ":lua vim.lsp.buf.rename()<CR>", desc = "Rename symbol" },
+            { "[d", ":lua vim.diagnostic.goto_prev()<CR>", desc = "Previous diagnostic" },
+            { "]d", ":lua vim.diagnostic.goto_next()<CR>", desc = "Next diagnostic" },
+            { "<leader>cf", ":lua vim.lsp.buf.format()<CR>", desc = "Format code" },
         }
     },
 
@@ -137,18 +137,27 @@ local function setup_which_key(bindings)
         return
     end
 
-    -- Register which-key groups
-    wk.register({
-        { "<leader>f", group = "file" },
-        { "<leader>t", group = "terminal" },
-        { "<leader>w", group = "window" },
-        { "<leader>b", group = "buffer" },
-        { "<leader>c", group = "code" },
-        { "<leader>s", group = "search" },
-    })
+    -- Register which-key groups with new format
+    local groups = {
+        { prefix = "<leader>f", name = "+file" },
+        { prefix = "<leader>t", name = "+terminal" },
+        { prefix = "<leader>w", name = "+window" },
+        { prefix = "<leader>b", name = "+buffer" },
+        { prefix = "<leader>c", name = "+code" },
+        { prefix = "<leader>s", name = "+search" },
+    }
+
+    -- Register groups
+    for _, group in ipairs(groups) do
+        wk.register({ [group.prefix] = { name = group.name } })
+    end
 
     -- Register all bindings with which-key
-    wk.register(bindings)
+    for _, binding in ipairs(bindings) do
+        wk.register({
+            [binding[1]] = { binding[2], binding.desc }
+        })
+    end
 end
 
 --[[
