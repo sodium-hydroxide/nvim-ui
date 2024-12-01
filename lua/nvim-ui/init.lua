@@ -31,9 +31,17 @@ M.options = {
 
     -- Tree configuration
     tree = {
-        width = 30,
-        side = "left",
-        git_integration = true,
+        view = {
+            width = {
+                min = 30,
+                max = 50,
+                padding = 1,
+            },
+            side = "left",
+        },
+        git = {
+            enable = true,
+        },
     },
 
     -- Terminal configuration
