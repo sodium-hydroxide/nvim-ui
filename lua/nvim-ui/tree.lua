@@ -26,7 +26,7 @@ local M = {}
  * a clean interface.
 --]]
 local default_config = {
-    -- View configuration controls how the tree is displayed
+    -- Core configuration
     view = {
         width = {
             min = 30,
@@ -34,12 +34,23 @@ local default_config = {
         },
         side = "left",
     },
-    git = {
-        enable = true,
-        ignore = true,
-    },
     renderer = {
+        group_empty = true,
+        highlight_git = true,
+        indent_width = 2,
+        indent_markers = {
+            enable = true,
+            inline_arrows = true,
+            icons = {
+                corner = "└",
+                edge = "│",
+                item = "│",
+                bottom = "─",
+                none = " ",
+            },
+        },
         icons = {
+            webdev_colors = true,
             show = {
                 file = true,
                 folder = true,
@@ -48,46 +59,10 @@ local default_config = {
             },
         },
     },
-    icons = {
-        webdev_colors = true,
-        show = {
-            file = true,
-            folder = true,
-            folder_arrow = true,
-            git = true,
-        },
-    },
-
-    -- Filters determine which files are shown
-    filters = {
-        dotfiles = false,
-        git_clean = false,
-        no_buffer = false,
-        custom = {},
-        exclude = {},
-    },
-
-    -- Actions configure behavior
-    actions = {
-        use_system_clipboard = true,
-        change_dir = {
-            enable = true,
-            global = false,
-            restrict_above_cwd = false,
-        },
-        open_file = {
-            quit_on_open = false,
-            resize_window = true,
-            window_picker = {
-                enable = true,
-                picker = "default",
-                chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
-                exclude = {
-                    filetype = { "notify", "packer", "qf", "diff", "fugitive", "fugitiveblame" },
-                    buftype = { "nofile", "terminal", "help" },
-                },
-            },
-        },
+    git = {
+        enable = true,
+        ignore = true,
+        timeout = 400,
     },
 }
 

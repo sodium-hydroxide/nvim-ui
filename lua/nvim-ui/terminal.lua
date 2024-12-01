@@ -186,28 +186,17 @@ end
 local function setup_autocommands()
     local group = vim.api.nvim_create_augroup("ToggleTermConfig", { clear = true })
 
-    -- Set terminal-specific options
     vim.api.nvim_create_autocmd("TermOpen", {
         group = group,
         pattern = "term://*",
-        callback = function()
+        callback = function(args)
             -- Start in insert mode
             vim.cmd("startinsert")
             -- Set terminal-specific options
-            local opts = {
-                buffer = true,
-                -- No line numbers in terminal
-                number = false,
-                relativenumber = false,
-                -- No sign column needed
-                signcolumn = "no",
-                -- Terminal-specific statusline
-                statusline = "%{b:term_title}",
-            }
-            -- Apply options
-            for k, v in pairs(opts) do
-                vim.opt_local[k] = v
-            end
+            vim.wo[args.buf].number = false
+            vim.wo[args.buf].relativenumber = false
+            vim.wo[args.buf].signcolumn = "no"
+            vim.wo[args.buf].statusline = "%{b:term_title}"
         end,
     })
 end

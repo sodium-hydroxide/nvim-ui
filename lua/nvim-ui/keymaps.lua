@@ -4,8 +4,8 @@
  * @module nvim-ui.keymaps
  *
  * This module provides a centralized system for managing keybindings.
- * It organizes bindings by category and integrates with which-key
- * to provide discoverable commands with helpful descriptions.
+ * It integrates with which-key to provide discoverable commands with
+ * helpful descriptions.
  *
  * The keybinding system emphasizes:
  * - Logical organization by function
@@ -34,14 +34,14 @@ local default_config = {
         enabled = true,
         bindings = {
             -- File operations
-            ["<leader>ff"] = { ":Telescope find_files<CR>", "Find files" },
-            ["<leader>fg"] = { ":Telescope live_grep<CR>", "Live grep" },
-            ["<leader>fb"] = { ":Telescope buffers<CR>", "Find buffers" },
-            ["<leader>fr"] = { ":Telescope oldfiles<CR>", "Recent files" },
+            { "<leader>ff", ":Telescope find_files<CR>", desc = "Find files" },
+            { "<leader>fg", ":Telescope live_grep<CR>", desc = "Live grep" },
+            { "<leader>fb", ":Telescope buffers<CR>", desc = "Find buffers" },
+            { "<leader>fr", ":Telescope oldfiles<CR>", desc = "Recent files" },
 
             -- Tree operations
-            ["<leader>e"] = { ":NvimTreeToggle<CR>", "Toggle file tree" },
-            ["<leader>o"] = { ":NvimTreeFocus<CR>", "Focus file tree" },
+            { "<leader>e", ":NvimTreeToggle<CR>", desc = "Toggle file tree" },
+            { "<leader>o", ":NvimTreeFocus<CR>", desc = "Focus file tree" },
         }
     },
 
@@ -49,10 +49,10 @@ local default_config = {
     terminal = {
         enabled = true,
         bindings = {
-            ["<C-\\>"] = { "<cmd>ToggleTerm<CR>", "Toggle terminal" },
-            ["<leader>tf"] = { "<cmd>ToggleTerm direction=float<CR>", "Floating terminal" },
-            ["<leader>th"] = { "<cmd>ToggleTerm direction=horizontal<CR>", "Horizontal terminal" },
-            ["<leader>tv"] = { "<cmd>ToggleTerm direction=vertical<CR>", "Vertical terminal" },
+            { "<C-\\>", "<cmd>ToggleTerm<CR>", desc = "Toggle terminal" },
+            { "<leader>tf", "<cmd>ToggleTerm direction=float<CR>", desc = "Floating terminal" },
+            { "<leader>th", "<cmd>ToggleTerm direction=horizontal<CR>", desc = "Horizontal terminal" },
+            { "<leader>tv", "<cmd>ToggleTerm direction=vertical<CR>", desc = "Vertical terminal" },
         }
     },
 
@@ -60,14 +60,14 @@ local default_config = {
     windows = {
         enabled = true,
         bindings = {
-            ["<C-h>"] = { "<C-w>h", "Move to left window" },
-            ["<C-j>"] = { "<C-w>j", "Move to bottom window" },
-            ["<C-k>"] = { "<C-w>k", "Move to top window" },
-            ["<C-l>"] = { "<C-w>l", "Move to right window" },
-            ["<leader>w|"] = { "<C-w>v", "Split window right" },
-            ["<leader>w-"] = { "<C-w>s", "Split window below" },
-            ["<leader>w="] = { "<C-w>=", "Equal window width" },
-            ["<leader>wc"] = { ":close<CR>", "Close window" },
+            { "<C-h>", "<C-w>h", desc = "Move to left window" },
+            { "<C-j>", "<C-w>j", desc = "Move to bottom window" },
+            { "<C-k>", "<C-w>k", desc = "Move to top window" },
+            { "<C-l>", "<C-w>l", desc = "Move to right window" },
+            { "<leader>w|", "<C-w>v", desc = "Split window right" },
+            { "<leader>w-", "<C-w>s", desc = "Split window below" },
+            { "<leader>w=", "<C-w>=", desc = "Equal window width" },
+            { "<leader>wc", ":close<CR>", desc = "Close window" },
         }
     },
 
@@ -75,10 +75,10 @@ local default_config = {
     buffers = {
         enabled = true,
         bindings = {
-            ["<leader>bd"] = { ":bdelete<CR>", "Delete buffer" },
-            ["<leader>bn"] = { ":bnext<CR>", "Next buffer" },
-            ["<leader>bp"] = { ":bprevious<CR>", "Previous buffer" },
-            ["<leader>bD"] = { ":bufdo bdelete<CR>", "Delete all buffers" },
+            { "<leader>bd", ":bdelete<CR>", desc = "Delete buffer" },
+            { "<leader>bn", ":bnext<CR>", desc = "Next buffer" },
+            { "<leader>bp", ":bprevious<CR>", desc = "Previous buffer" },
+            { "<leader>bD", ":bufdo bdelete<CR>", desc = "Delete all buffers" },
         }
     },
 
@@ -86,14 +86,14 @@ local default_config = {
     code = {
         enabled = true,
         bindings = {
-            ["gd"] = { vim.lsp.buf.definition, "Go to definition" },
-            ["gr"] = { vim.lsp.buf.references, "Find references" },
-            ["K"] = { vim.lsp.buf.hover, "Show hover" },
-            ["<leader>ca"] = { vim.lsp.buf.code_action, "Code actions" },
-            ["<leader>rn"] = { vim.lsp.buf.rename, "Rename symbol" },
-            ["[d"] = { vim.diagnostic.goto_prev, "Previous diagnostic" },
-            ["]d"] = { vim.diagnostic.goto_next, "Next diagnostic" },
-            ["<leader>cf"] = { vim.lsp.buf.format, "Format code" },
+            { "gd", vim.lsp.buf.definition, desc = "Go to definition" },
+            { "gr", vim.lsp.buf.references, desc = "Find references" },
+            { "K", vim.lsp.buf.hover, desc = "Show hover" },
+            { "<leader>ca", vim.lsp.buf.code_action, desc = "Code actions" },
+            { "<leader>rn", vim.lsp.buf.rename, desc = "Rename symbol" },
+            { "[d", vim.diagnostic.goto_prev, desc = "Previous diagnostic" },
+            { "]d", vim.diagnostic.goto_next, desc = "Next diagnostic" },
+            { "<leader>cf", vim.lsp.buf.format, desc = "Format code" },
         }
     },
 
@@ -101,16 +101,16 @@ local default_config = {
     search = {
         enabled = true,
         bindings = {
-            ["<leader>sw"] = { ":lua require('telescope.builtin').grep_string()<CR>", "Search word" },
-            ["<leader>sr"] = { ":%s/<C-r><C-w>//g<Left><Left>", "Replace word" },
-            ["<leader>sc"] = { ":nohlsearch<CR>", "Clear search" },
+            { "<leader>sw", ":lua require('telescope.builtin').grep_string()<CR>", desc = "Search word" },
+            { "<leader>sr", ":%s/<C-r><C-w>//g<Left><Left>", desc = "Replace word" },
+            { "<leader>sc", ":nohlsearch<CR>", desc = "Clear search" },
         }
     },
 }
 
 --[[
  * @brief Applies a single keymap with error handling
- * @param mode string|table The mode(s) for the keymap
+ * @param mode string|table The mode(s) for the mapping
  * @param lhs string The left-hand side of the mapping
  * @param rhs string|function The right-hand side of the mapping
  * @param opts table Additional options for the mapping
@@ -139,19 +139,16 @@ local function setup_which_key(bindings)
 
     -- Register which-key groups
     wk.register({
-        ["<leader>f"] = { name = "+file" },
-        ["<leader>t"] = { name = "+terminal" },
-        ["<leader>w"] = { name = "+window" },
-        ["<leader>b"] = { name = "+buffer" },
-        ["<leader>c"] = { name = "+code" },
-        ["<leader>s"] = { name = "+search" },
+        { "<leader>f", group = "file" },
+        { "<leader>t", group = "terminal" },
+        { "<leader>w", group = "window" },
+        { "<leader>b", group = "buffer" },
+        { "<leader>c", group = "code" },
+        { "<leader>s", group = "search" },
     })
 
     -- Register all bindings with which-key
-    for lhs, mapping in pairs(bindings) do
-        local rhs, desc = mapping[1], mapping[2]
-        wk.register({ [lhs] = { rhs, desc } })
-    end
+    wk.register(bindings)
 end
 
 --[[
@@ -160,18 +157,14 @@ end
  * @param opts table Global options that affect keymaps
  * @local
 --]]
-local function apply_category_maps(category, opts)
+local function apply_category_maps(category)
     if not category.enabled then
         return
     end
 
-    for lhs, mapping in pairs(category.bindings) do
-        local rhs, desc = mapping[1], mapping[2]
-        safe_map("n", lhs, rhs, {
-            desc = desc,
-            silent = true,
-            noremap = true
-        })
+    for _, binding in ipairs(category.bindings) do
+        local lhs, rhs, opts = binding[1], binding[2], { desc = binding.desc }
+        safe_map("n", lhs, rhs, opts)
     end
 end
 
@@ -186,13 +179,11 @@ M.setup = function(opts)
     -- Set leader key
     vim.g.mapleader = config.leader
 
-    -- Create a flat map of all bindings for which-key
+    -- Create a flat list of all bindings for which-key
     local all_bindings = {}
-    for category_name, category in pairs(config) do
+    for _, category in pairs(config) do
         if type(category) == "table" and category.bindings then
-            for lhs, mapping in pairs(category.bindings) do
-                all_bindings[lhs] = mapping
-            end
+            vim.list_extend(all_bindings, category.bindings)
         end
     end
 
@@ -202,7 +193,7 @@ M.setup = function(opts)
     -- Apply keymaps by category
     for category_name, category in pairs(config) do
         if type(category) == "table" and category.bindings then
-            apply_category_maps(category, config)
+            apply_category_maps(category)
         end
     end
 end
