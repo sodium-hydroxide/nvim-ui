@@ -1,4 +1,3 @@
--- tree.lua for nvim-ui
 --[[
  * @brief Manages file tree visualization and navigation
  * @module nvim-ui.tree
@@ -17,7 +16,7 @@ local M = {}
 --[[
  * @brief Default tree configuration
  * @field view Settings for tree appearance and behavior
- * @field git_integration Settings for git status display
+ * @field git Settings for git status display
  * @field actions Settings for file operations
  * @local
  *
@@ -26,9 +25,19 @@ local M = {}
  * a clean interface.
 --]]
 local default_config = {
+    -- Core settings
+    sort = {
+        sorter = "name",
+        folders_first = true,
+    },
+
     -- View configuration controls how the tree is displayed
     view = {
-        width = 30,
+        width = {
+            min = 30,
+            max = 50,
+            padding = 1,
+        },
         side = "left",
         number = false,
         relativenumber = false,
@@ -51,13 +60,19 @@ local default_config = {
     git = {
         enable = true,
         ignore = true,
+        show_on_dirs = true,
+        show_on_open_dirs = true,
         timeout = 400,
     },
 
     -- Renderer controls visual elements
     renderer = {
+        add_trailing = false,
         group_empty = true,
         highlight_git = true,
+        full_name = false,
+        highlight_opened_files = "none",
+        root_folder_label = ":~:s?$?/..?",
         indent_width = 2,
         indent_markers = {
             enable = true,
@@ -72,13 +87,42 @@ local default_config = {
         },
         icons = {
             webdev_colors = true,
+            git_placement = "before",
+            padding = " ",
+            symlink_arrow = " ➛ ",
             show = {
                 file = true,
                 folder = true,
                 folder_arrow = true,
                 git = true,
             },
+            glyphs = {
+                default = "",
+                symlink = "",
+                bookmark = "",
+                folder = {
+                    arrow_closed = "",
+                    arrow_open = "",
+                    default = "",
+                    open = "",
+                    empty = "",
+                    empty_open = "",
+                    symlink = "",
+                    symlink_open = "",
+                },
+                git = {
+                    unstaged = "✗",
+                    staged = "✓",
+                    unmerged = "",
+                    renamed = "➜",
+                    untracked = "★",
+                    deleted = "",
+                    ignored = "◌",
+                },
+            },
         },
+        special_files = { "Cargo.toml", "Makefile", "README.md", "readme.md" },
+        symlink_destination = true,
     },
 
     -- Filters determine which files are shown
@@ -98,18 +142,54 @@ local default_config = {
             global = false,
             restrict_above_cwd = false,
         },
+        expand_all = {
+            max_folder_discovery = 300,
+            exclude = {},
+        },
+        file_popup = {
+            open_win_config = {
+                col = 1,
+                row = 1,
+                relative = "cursor",
+                border = "shadow",
+                style = "minimal",
+            },
+        },
         open_file = {
             quit_on_open = false,
             resize_window = true,
             window_picker = {
                 enable = true,
-                picker = "default",
                 chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
                 exclude = {
                     filetype = { "notify", "packer", "qf", "diff", "fugitive", "fugitiveblame" },
                     buftype = { "nofile", "terminal", "help" },
                 },
             },
+        },
+    },
+
+    -- System configuration
+    system_open = {
+        cmd = "",
+        args = {},
+    },
+
+    -- Diagnostics configuration
+    diagnostics = {
+        enable = false,
+        show_on_dirs = false,
+        show_on_open_dirs = true,
+        debounce_delay = 50,
+        severity = {
+            min = vim.diagnostic.severity.HINT,
+            max = vim.diagnostic.severity.ERROR,
+        },
+        icons = {
+            hint = "",
+            info = "",
+            warning = "",
+            error = "",
         },
     },
 }
