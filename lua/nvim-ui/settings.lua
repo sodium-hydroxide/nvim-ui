@@ -29,6 +29,7 @@ local default_config = {
         cmdheight = 1,            -- Height of command line
         scrolloff = 8,            -- Lines of context
         wrap = false,             -- Don't wrap lines
+        colorcolumn = "80",
         fillchars = {
             eob = " ",            -- Empty lines at end of buffer
         },
@@ -84,6 +85,7 @@ local function apply_options(opts)
     vim.opt.cmdheight = opts.display.cmdheight
     vim.opt.scrolloff = opts.display.scrolloff
     vim.opt.wrap = opts.display.wrap
+    vim.opt.colorcolumn = opts.display.colorcolumn
     vim.opt.fillchars = opts.display.fillchars
     vim.opt.listchars = opts.display.listchars
 
