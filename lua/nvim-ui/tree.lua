@@ -26,14 +26,35 @@ local M = {}
  * a clean interface.
 --]]
 local default_config = {
-    -- Core configuration
+    -- View configuration controls how the tree is displayed
     view = {
-        width = {
-            min = 30,
-            max = 30,
-        },
+        width = 30,
         side = "left",
+        number = false,
+        relativenumber = false,
+        signcolumn = "yes",
+        float = {
+            enable = false,
+            quit_on_focus_loss = true,
+            open_win_config = {
+                relative = "editor",
+                border = "rounded",
+                width = 30,
+                height = 30,
+                row = 1,
+                col = 1,
+            },
+        },
     },
+
+    -- Git integration shows status and changes
+    git = {
+        enable = true,
+        ignore = true,
+        timeout = 400,
+    },
+
+    -- Renderer controls visual elements
     renderer = {
         group_empty = true,
         highlight_git = true,
@@ -59,10 +80,37 @@ local default_config = {
             },
         },
     },
-    git = {
-        enable = true,
-        ignore = true,
-        timeout = 400,
+
+    -- Filters determine which files are shown
+    filters = {
+        dotfiles = false,
+        git_clean = false,
+        no_buffer = false,
+        custom = {},
+        exclude = {},
+    },
+
+    -- Actions configure behavior
+    actions = {
+        use_system_clipboard = true,
+        change_dir = {
+            enable = true,
+            global = false,
+            restrict_above_cwd = false,
+        },
+        open_file = {
+            quit_on_open = false,
+            resize_window = true,
+            window_picker = {
+                enable = true,
+                picker = "default",
+                chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+                exclude = {
+                    filetype = { "notify", "packer", "qf", "diff", "fugitive", "fugitiveblame" },
+                    buftype = { "nofile", "terminal", "help" },
+                },
+            },
+        },
     },
 }
 

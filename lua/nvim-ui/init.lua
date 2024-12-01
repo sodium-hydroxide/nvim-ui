@@ -31,43 +31,9 @@ M.options = {
 
     -- Tree configuration
     tree = {
-        view = {
-            width = {
-                min = 30,
-                max = 30,
-            },
-            side = "left",
-        },
-        renderer = {
-            group_empty = true,
-            highlight_git = true,
-            indent_width = 2,
-            indent_markers = {
-                enable = true,
-                inline_arrows = true,
-                icons = {
-                    corner = "└",
-                    edge = "│",
-                    item = "│",
-                    bottom = "─",
-                    none = " ",
-                },
-            },
-            icons = {
-                webdev_colors = true,
-                show = {
-                    file = true,
-                    folder = true,
-                    folder_arrow = true,
-                    git = true,
-                },
-            },
-        },
-        git = {
-            enable = true,
-            ignore = true,
-            timeout = 400,
-        },
+        width = 30,
+        side = "left",
+        git_integration = true,
     },
 
     -- Terminal configuration
