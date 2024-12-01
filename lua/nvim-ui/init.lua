@@ -125,7 +125,9 @@ M.setup = function(opts)
 
     -- Set up components in the correct order
     local components = {
-        -- Format should be first to ensure proper display
+        -- Settings should be first to ensure proper display
+        { name = "settings", enabled = true },
+        -- Format should be next to ensure proper display
         { name = "format", enabled = M.options.features.format },
         -- Tree and terminal provide core functionality
         { name = "tree", enabled = M.options.features.tree },
