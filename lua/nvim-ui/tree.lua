@@ -28,56 +28,33 @@ local M = {}
 local default_config = {
     -- View configuration controls how the tree is displayed
     view = {
-        width = 30,
-        side = "left",
-        number = false,
-        relativenumber = false,
-        signcolumn = "yes",
-        float = {
-            enable = false,
-            quit_on_focus_loss = true,
-            open_win_config = {
-                relative = "editor",
-                border = "rounded",
-                width = 30,
-                height = 30,
-                row = 1,
-                col = 1,
-            },
+        width = {
+            min = 30,
+            max = 30,
         },
+        side = "left",
     },
-
-    -- Git integration shows status and changes
     git = {
         enable = true,
         ignore = true,
-        timeout = 400,
     },
-
-    -- Renderer controls visual elements
     renderer = {
-        group_empty = true,
-        highlight_git = true,
-        indent_width = 2,
-        indent_markers = {
-            enable = true,
-            inline_arrows = true,
-            icons = {
-                corner = "└",
-                edge = "│",
-                item = "│",
-                bottom = "─",
-                none = " ",
-            },
-        },
         icons = {
-            webdev_colors = true,
             show = {
                 file = true,
                 folder = true,
                 folder_arrow = true,
                 git = true,
             },
+        },
+    },
+    icons = {
+        webdev_colors = true,
+        show = {
+            file = true,
+            folder = true,
+            folder_arrow = true,
+            git = true,
         },
     },
 
