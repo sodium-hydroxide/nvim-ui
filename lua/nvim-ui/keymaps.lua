@@ -120,41 +120,41 @@ end
  * @param mappings table The keymap mappings to register
  * @local
 --]]
-
 local function setup_which_key(mappings)
     local ok, wk = pcall(require, "which-key")
     if not ok then
         return
     end
 
-    -- Register groups using new format
-    local groups = {
-        { "<leader>f", group = "file" },
-        { "<leader>t", group = "terminal" },
-        { "<leader>w", group = "window" },
-        { "<leader>b", group = "buffer" },
-        { "<leader>c", group = "code" },
-        { "<leader>s", group = "search" },
-    }
+    -- Register which-key groups first
+    wk.register({
+        ["<leader>f"] = { name = "+file" },
+        ["<leader>t"] = { name = "+terminal" },
+        ["<leader>w"] = { name = "+window" },
+        ["<leader>b"] = { name = "+buffer" },
+        ["<leader>c"] = { name = "+code" },
+        ["<leader>s"] = { name = "+search" },
+    })
 
-    wk.register(groups)
-
-    -- Process mappings using new format
+    -- Process mappings to handle functions correctly
     local processed_mappings = {}
     for _, mapping in ipairs(mappings) do
-        local lhs, rhs = mapping[1], mapping[2]
+        local lhs, rhs, opts = mapping[1], mapping[2], { desc = mapping.desc }
 
-        -- Create mapping entry using new format
-        table.insert(processed_mappings, {
-            lhs,
-            type(rhs) == "function" and rhs or rhs,
-            desc = mapping.desc,
-            mode = "n"
-        })
+        if type(rhs) == "function" then
+            -- For function mappings, create a special entry
+            processed_mappings[lhs] = {
+                function() rhs() end,
+                mapping.desc
+            }
+        else
+            -- For string mappings, keep as is
+            processed_mappings[lhs] = { rhs, mapping.desc }
+        end
     end
 
-    -- Register all mappings
-    wk.register(processed_mappings)
+    -- Register the processed mappings
+    wk.register(processed_mappings, { mode = "n" })
 end
 
 --[[
@@ -169,21 +169,17 @@ local function apply_category_maps(category, all_mappings)
     end
 
     for _, mapping in ipairs(category.mappings) do
-        local lhs, rhs = mapping[1], mapping[2]
+        local lhs, rhs, opts = mapping[1], mapping[2], { desc = mapping.desc }
 
-        -- Add mapping to collection using new format
-        table.insert(all_mappings, {
-            lhs,
-            rhs,
-            desc = mapping.desc,
-            mode = "n"
-        })
+        -- Add all mappings to the collection
+        table.insert(all_mappings, mapping)
 
-        -- Set up the actual keymap
-        vim.keymap.set("n", lhs, rhs, {
-            desc = mapping.desc,
-            silent = true
-        })
+        -- Set up the keymap with proper mode
+        if type(rhs) == "function" then
+            vim.keymap.set("n", lhs, rhs, { desc = mapping.desc, silent = true })
+        else
+            vim.keymap.set("n", lhs, rhs, { desc = mapping.desc, silent = true })
+        end
     end
 end
 
