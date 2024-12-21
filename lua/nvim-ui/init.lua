@@ -232,4 +232,11 @@ M.setup = function(opts)
     end
 end
 
+vim.api.nvim_create_autocmd("User", {
+    pattern = "LazyCheck",
+    callback = function()
+        require("nvim-ui.health").check()
+    end,
+})
+
 return M
