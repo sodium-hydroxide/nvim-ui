@@ -128,12 +128,12 @@ local function setup_which_key(mappings)
 
     -- Register which-key groups first
     wk.register({
-        ["<leader>f"] = { name = "file" },
-        ["<leader>t"] = { name = "terminal" },
-        ["<leader>w"] = { name = "window" },
-        ["<leader>b"] = { name = "buffer" },
-        ["<leader>c"] = { name = "code" },
-        ["<leader>s"] = { name = "search" },
+        ["<leader>f"] = { name = "+file" },
+        ["<leader>t"] = { name = "+terminal" },
+        ["<leader>w"] = { name = "+window" },
+        ["<leader>b"] = { name = "+buffer" },
+        ["<leader>c"] = { name = "+code" },
+        ["<leader>s"] = { name = "+search" },
     })
 
     -- Process mappings to handle functions correctly
@@ -141,22 +141,20 @@ local function setup_which_key(mappings)
     for _, mapping in ipairs(mappings) do
         local lhs, rhs, opts = mapping[1], mapping[2], { desc = mapping.desc }
 
-        -- Convert function references to strings for which-key
         if type(rhs) == "function" then
-            -- Store the function for the actual keymap
-            local fn = rhs
-            -- Create a descriptive string for which-key
-            processed_mappings[lhs] = { name = mapping.desc }
-            -- Set up the actual keymap
-            vim.keymap.set("n", lhs, fn, { desc = mapping.desc })
+            -- For function mappings, create a special entry
+            processed_mappings[lhs] = {
+                function() rhs() end,
+                mapping.desc
+            }
         else
-            -- For non-function mappings, keep as is
+            -- For string mappings, keep as is
             processed_mappings[lhs] = { rhs, mapping.desc }
         end
     end
 
     -- Register the processed mappings
-    wk.register(processed_mappings)
+    wk.register(processed_mappings, { mode = "n" })
 end
 
 --[[
@@ -171,15 +169,17 @@ local function apply_category_maps(category, all_mappings)
     end
 
     for _, mapping in ipairs(category.mappings) do
-        local lhs, rhs = mapping[1], mapping[2]
-        -- Only add to all_mappings if it's not a function
-        -- (functions are handled specially in setup_which_key)
-        if type(rhs) ~= "function" then
-            table.insert(all_mappings, mapping)
-        end
+        local lhs, rhs, opts = mapping[1], mapping[2], { desc = mapping.desc }
 
-        -- Set up the keymap
-        vim.keymap.set("n", lhs, rhs, { desc = mapping.desc })
+        -- Add all mappings to the collection
+        table.insert(all_mappings, mapping)
+
+        -- Set up the keymap with proper mode
+        if type(rhs) == "function" then
+            vim.keymap.set("n", lhs, rhs, { desc = mapping.desc, silent = true })
+        else
+            vim.keymap.set("n", lhs, rhs, { desc = mapping.desc, silent = true })
+        end
     end
 end
 
