@@ -128,12 +128,12 @@ local function setup_which_key(mappings)
 
     -- Register which-key groups first
     wk.register({
+        {"<leader>b", group = "buffer" },
         {"<leader>f", group = "file" },
         {"<leader>t", group = "terminal" },
-        {"<leader>w", group = "window" },
-        {"<leader>b", group = "buffer" },
-        {"<leader>c", group = "code" },
         {"<leader>s", group = "search" },
+        {"<leader>c", group = "code" },
+        {"<leader>w", group = "window" },
     })
 
     -- Process mappings to handle functions correctly
