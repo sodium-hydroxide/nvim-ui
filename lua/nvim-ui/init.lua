@@ -21,10 +21,10 @@ function M.setup(opts)
         { "nvim-lua/plenary.nvim" },
 
         -- Your configured plugins
-        require('my-nvim-config.plugins.theme'),
-        require('my-nvim-config.plugins.filetree'),
-        require('my-nvim-config.plugins.terminal'),
-        require('my-nvim-config.plugins.hex-edit'),
+        require('nvim-ui.plugins.theme'),
+        require('nvim-ui.plugins.filetree'),
+        require('nvim-ui.plugins.terminal'),
+        require('nvim-ui.plugins.hex-edit'),
         {
             "kevinhwang91/nvim-ufo",
             dependencies = {
